@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2022/11/29 14:01:54.000.956,=D:\data\Delphi\myproj\Unit1.pas</Transaction>
+    <Transaction>2022/11/30 08:46:54.000.035,=D:\data\Delphi\myproj\Unit1.pas</Transaction>
+    <Transaction>2022/12/07 16:25:40.000.037,=D:\data\Delphi\myproj\Unit1.pas</Transaction>
+    <Transaction>2022/12/14 09:48:18.000.541,=D:\data\Delphi\myproj\Unit2.pas</Transaction>
+    <Transaction>2022/12/14 09:49:37.000.680,D:\data\Delphi\myproj\G\image\batch_img_convert\Unit1.pas=D:\data\Delphi\myproj\Unit2.pas</Transaction>
+    <Transaction>2022/12/14 09:49:37.000.680,D:\data\Delphi\myproj\G\image\batch_img_convert\Unit1.dfm=D:\data\Delphi\myproj\Unit2.dfm</Transaction>
+    <Transaction>2022/12/14 09:50:08.000.017,D:\data\Delphi\myproj\G\image\batch_img_convert\batch_img_convert.dproj=D:\data\Delphi\myproj\Project1.dproj</Transaction>
+    <Transaction>2022/12/14 10:41:49.000.530,=D:\data\Delphi\mycompDelphi10\TDE_COMMON\About.pas</Transaction>
+    <Transaction>2022/12/14 10:41:49.000.545,=D:\data\Delphi\mycompDelphi10\TDE_COMMON\Unit_Image_process.pas</Transaction>
+  </Transactions>
+</BorlandProject>
