@@ -9,3 +9,5 @@ BMP, JPG, PNG, GIF, TIFF file format
 - BMP, JPG, PNG, GIF, TIFF file format
 - 
 - recursive feature
+
+* ![N|Solid](https://github.com/vincentcheng2116/batch_img_convert/blob/main/help.png)
