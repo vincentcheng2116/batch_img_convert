@@ -8,10 +8,12 @@
 BMP, JPG, PNG, GIF, TIFF file format
 
 * Running under Windows x64 system
-* > Convert BMP, JPG, PNG, GIF, TIFF file format  
-* > to  
-* > BMP, JPG, PNG, GIF, TIFF file format
+```
+Convert BMP, JPG, PNG, GIF, TIFF file format  
+  to  
+BMP, JPG, PNG, GIF, TIFF file format
+```
 * batch select files to convert
 * Recursive feature
 
- ![N|Solid](help.png)
+![N|Solid](help.png)
