@@ -14,9 +14,7 @@ uses
   System.IOUtils,
   Winapi.shellapi,
   inifiles,
-  math, Vcl.Menus
-
-    ;
+  math, Vcl.Menus;
 
 type
   TForm_Main = class(TForm)
@@ -64,6 +62,7 @@ type
     procedure PopupMenu_deleteClick(Sender: TObject);
     procedure ListBox1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Permanentdelete1Click(Sender: TObject);
+    procedure Label_sizeClick(Sender: TObject);
   private
     procedure List_files_by_keyword(dir1: string; ext1: string; recursive1: Boolean; var ListBox1: TListBox);
     { Private declarations }
@@ -114,7 +113,7 @@ procedure TForm_Main.Button_ConvertClick(Sender: TObject);
 var
   iCompression: Integer;
   oJPG: TJPegImage;
-  oBMP: TBitMap;
+  oBMP: TBitmap;
   i: Integer;
   s, ext: string;
   new_file_name: string;
@@ -313,7 +312,7 @@ begin
         s0 := ExtractFilePath(Edit1.Text);
         s1 := ExtractFileName(Edit1.Text);
 {$IFDEF DEBUG}
-        MessageDlg('s0= ' + s0 + #13 + #10 + 's1= ' + s1, mtInformation, [mbOK], 0);
+        // MessageDlg('s0= ' + s0 + #13 + #10 + 's1= ' + s1, mtInformation, [mbOK], 0);
 {$ENDIF}
         List_files_by_keyword(s0, s1, CheckBox_recursive.Checked, ListBox1);
       end;
@@ -384,18 +383,18 @@ begin
   // pos1:= point(x+ScrollBox1.left,y+ScrollBox1.top);
   if (ssMiddle in Shift) then
     begin
-      // ZoomTo(currentpoint.X, currentpoint.Y, 0);
-      // zoom 1:1
-      // Image_scrollBox_Zoom(Image1, 0, currentpoint);
+      //1:1
+      pos1 := point(X, Y);
       Image_scrollBox_Zoom2(Image1, 0, pos1);
       show_image_rate_on_label_rate;
       show_image1_size_on_label_size;
 
-      // pos1 := ClientToScreen(pos1);
-      // pos1.X := pos1.X - ScrollBox1.HorzScrollBar.Position;
-      // pos1.Y := pos1.Y - ScrollBox1.VertScrollBar.Position;
+      pos1.X := pos1.X - ScrollBox1.HorzScrollBar.Position; // + scrollbox1.Left ;
+      pos1.Y := pos1.Y - ScrollBox1.VertScrollBar.Position; // + scrollbox1.top;
 
-      // SetCursorPos(pos1.X, pos1.Y);
+      pos1 := ClientToScreen(pos1);
+
+      SetCursorPos(pos1.X + ScrollBox1.Left, pos1.Y + ScrollBox1.Top);
 
     end;
 
@@ -404,8 +403,8 @@ end;
 procedure TForm_Main.show_image_rate_on_label_rate;
 begin
   // update rate to label_rate
-  if Image1.Picture.bitmap.Width > 0 then
-    Label_rate.Caption := Format('%3.2f%%', [Image1.Width / Image1.Picture.bitmap.Width * 100]);
+  if Image1.Picture.Bitmap.Width > 0 then
+    Label_rate.Caption := Format('%3.2f%%', [Image1.Width / Image1.Picture.Bitmap.Width * 100]);
 end;
 
 procedure TForm_Main.showinExplorer1Click(Sender: TObject);
@@ -416,6 +415,21 @@ end;
 procedure TForm_Main.show_image1_size_on_label_size;
 begin
   Label_size.Caption := Format('Size: %4d*%4d', [Image1.Picture.Width, Image1.Picture.Height]);
+end;
+
+procedure TForm_Main.Label_sizeClick(Sender: TObject);
+var
+  s: string;
+begin
+  s := ListBox1.Items[ListBox1.ItemIndex];
+  if lowercase(ExtractFileExt(s)) = '.gif' then
+    begin
+      Image1.Picture.LoadFromFile(s);
+      (Image1.Picture.Graphic as TGIFImage).Animate := true;
+      StatusBar1.Panels[3].Text := Format('w:%3d h:%3d', [Image1.Width, Image1.Height]);
+      StatusBar1.Panels[4].Text := Format('w:%3d h:%3d', [Image1.Picture.Width, Image1.Picture.Height]);
+    end;
+
 end;
 
 procedure TForm_Main.ListBox1Click(Sender: TObject);
@@ -429,6 +443,7 @@ begin
       Load_IMG_File(s, Image1);
       show_image_rate_on_label_rate;
       show_image1_size_on_label_size;
+      // image_to_bitmap_24bit(Image1);
 
     end;
 
@@ -608,7 +623,7 @@ begin
       s0 := ExtractFilePath(Edit1.Text);
       s1 := ExtractFileName(Edit1.Text);
 {$IFDEF DEBUG}
-      MessageDlg('s0= ' + s0 + #13 + #10 + 's1= ' + s1, mtInformation, [mbOK], 0);
+      // MessageDlg('s0= ' + s0 + #13 + #10 + 's1= ' + s1, mtInformation, [mbOK], 0);
 {$ENDIF}
       List_files_by_keyword(s0, s1, CheckBox_recursive.Checked, ListBox1);
     end;
@@ -649,7 +664,7 @@ begin
   pos1.Y := pos1.Y - ScrollBox1.VertScrollBar.Position; // + scrollbox1.top;
   pos1 := ClientToScreen(pos1);
 
-  SetCursorPos(pos1.X + ScrollBox1.Left, ScrollBox1.Top + pos1.Y);
+  SetCursorPos(pos1.X + ScrollBox1.Left, +pos1.Y + ScrollBox1.Top);
   Handled := true;
 
 {$IFDEF DEBUG}

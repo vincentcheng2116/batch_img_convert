@@ -72,7 +72,7 @@ object Form_Main: TForm_Main
   object Edit1: TEdit
     Left = 120
     Top = 9
-    Width = 941
+    Width = 935
     Height = 28
     Margins.Left = 4
     Margins.Top = 4
@@ -81,7 +81,7 @@ object Form_Main: TForm_Main
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
     Text = 'Edit1'
-    ExplicitWidth = 937
+    ExplicitWidth = 931
   end
   object StatusBar1: TStatusBar
     Left = 0
@@ -219,13 +219,11 @@ object Form_Main: TForm_Main
     Align = alClient
     TabOrder = 8
     OnMouseWheel = ScrollBox1MouseWheel
-    ExplicitWidth = 1067
-    ExplicitHeight = 450
     object Image1: TImage
       Left = 4
       Top = 4
-      Width = 131
-      Height = 131
+      Width = 197
+      Height = 197
       Margins.Left = 4
       Margins.Top = 4
       Margins.Right = 4
@@ -260,7 +258,7 @@ object Form_Main: TForm_Main
       Caption = 'JPG compress rate'
     end
     object Label_rate: TLabel
-      Left = 800
+      Left = 740
       Top = 51
       Width = 68
       Height = 20
@@ -271,7 +269,7 @@ object Form_Main: TForm_Main
       Caption = 'Label_rate'
     end
     object Label_size: TLabel
-      Left = 900
+      Left = 830
       Top = 51
       Width = 67
       Height = 20
@@ -280,6 +278,7 @@ object Form_Main: TForm_Main
       Margins.Right = 4
       Margins.Bottom = 4
       Caption = 'Label_size'
+      OnClick = Label_sizeClick
     end
     object Button_Convert: TButton
       Left = 9
