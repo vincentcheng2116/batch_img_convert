@@ -9,12 +9,14 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls,
   Vcl.Imaging.pngimage, Vcl.Imaging.jpeg, Vcl.Imaging.GIFImg, Vcl.ExtDlgs,
-  Unit_Image_process,
   System.Types,
   System.IOUtils,
   Winapi.shellapi,
   inifiles,
-  math, Vcl.Menus;
+  math, Vcl.Menus,
+  Unit_Image_process,
+  about,
+  Vcl.Buttons;
 
 type
   TForm_Main = class(TForm)
@@ -46,6 +48,7 @@ type
     PopupMenu_delete: TMenuItem;
     showinExplorer1: TMenuItem;
     Permanentdelete1: TMenuItem;
+    SpeedButton1: TSpeedButton;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Button_ConvertClick(Sender: TObject);
@@ -63,24 +66,25 @@ type
     procedure ListBox1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure Permanentdelete1Click(Sender: TObject);
     procedure Label_sizeClick(Sender: TObject);
-  private
-    procedure List_files_by_keyword(dir1: string; ext1: string; recursive1: Boolean; var ListBox1: TListBox);
-    { Private declarations }
-  private
-    originalPanelWindowProc: TWndMethod;
-    procedure PanelWindowProc(var Msg: TMessage);
-    procedure PanelDropFile(var Msg: TWMDROPFILES);
-    procedure CreateWnd; override;
-    procedure show_image_rate_on_label_rate;
-    procedure show_image1_size_on_label_size;
+    procedure SpeedButton1Click(Sender: TObject);
+    private
+      procedure List_files_by_keyword(dir1: string; ext1: string; recursive1: Boolean; var ListBox1: TListBox);
+      { Private declarations }
+    private
+      originalPanelWindowProc: TWndMethod;
+      procedure PanelWindowProc(var Msg: TMessage);
+      procedure PanelDropFile(var Msg: TWMDROPFILES);
+      procedure CreateWnd; override;
+      procedure show_image_rate_on_label_rate;
+      procedure show_image1_size_on_label_size;
 
-  public
-    { Public declarations }
+    public
+      { Public declarations }
   end;
 
 var
   Form_Main: TForm_Main;
-  org: TPoint;
+  org      : TPoint;
 
 implementation
 
@@ -88,43 +92,43 @@ implementation
 
 procedure TForm_Main.Button1Click(Sender: TObject);
 var
-  s: string;
+  s  : string;
   cnt: Integer;
 
 begin
   ListBox1.Clear;
   // FileOpenDialog1.DefaultExtension:=lowercase(radioGroup1.Items[radioGroup1.ItemIndex]);
   if OpenPictureDialog1.Execute then
+  begin
+
+    for cnt := 0 to OpenPictureDialog1.files.Count - 1 do
     begin
-
-      for cnt := 0 to OpenPictureDialog1.files.Count - 1 do
-        begin
-          s := OpenPictureDialog1.files[cnt];
-          ListBox1.Items.Add(s);
-        end;
-      Edit1.Text := ExtractFilePath(s);
-
+      s := OpenPictureDialog1.files[cnt];
+      ListBox1.Items.Add(s);
     end;
+    Edit1.Text := ExtractFilePath(s);
+
+  end;
 
 end;
 
 procedure TForm_Main.Button_ConvertClick(Sender: TObject);
 
 var
-  iCompression: Integer;
-  oJPG: TJPegImage;
-  oBMP: TBitmap;
-  i: Integer;
-  s, ext: string;
+  iCompression : Integer;
+  oJPG         : TJPegImage;
+  oBMP         : TBitmap;
+  i            : Integer;
+  s, ext       : string;
   new_file_name: string;
   // jpg_rate:integer;
 begin
   iCompression := StrToIntDef(Edit_Jpg_compress_rate.Text, 0);
   if iCompression = 0 then
-    begin
-      Edit_Jpg_compress_rate.Text := '100';
-      iCompression := 100;
-    end;
+  begin
+    Edit_Jpg_compress_rate.Text := '100';
+    iCompression                := 100;
+  end;
   {
     oJPG := TJPegImage.Create;
     oJPG.LoadFromFile(AInFile);
@@ -141,78 +145,78 @@ begin
     oBMP.Free;
   }
   if ListBox1.SelCount > 1 then
+  begin
+    for i := 0 to ListBox1.Items.Count - 1 do
     begin
-      for i := 0 to ListBox1.Items.Count - 1 do
+      if ListBox1.Selected[i] then
+      begin
+        s := ListBox1.Items[i];
+        if FileExists(s) then
         begin
-          if ListBox1.Selected[i] then
-            begin
-              s := ListBox1.Items[i];
-              if FileExists(s) then
-                begin
-                  ext := ExtractFileExt(s);
-                  Load_IMG_File(s, Image1);
-                  Image1.Refresh;
+          ext := ExtractFileExt(s);
+          Load_IMG_File(s, Image1);
+          Image1.Refresh;
 {$IFDEF DEBUG}
-                  sleep(500);
+          sleep(500);
 {$ENDIF}
-                  new_file_name := copy(s, 1, pos(ext, s) - 1) + '.' + lowercase(RadioGroup2.Items[RadioGroup2.ItemIndex]);
-                  if FileExists(new_file_name) then
-                    begin
-                      Memo1.Lines.Add('file already exist: ' + new_file_name);
-                      if CheckBox_over_write.Checked then
-                        begin
-                          Save_img_diff_format(new_file_name, Image1, iCompression);
-                          Memo1.Lines[Memo1.Lines.Count - 1] := Memo1.Lines[Memo1.Lines.Count - 1] + ' -->over write ';
-                        end;
-                    end
-                  else
-                    begin
-                      Save_img_diff_format(new_file_name, Image1, iCompression);
-                      Memo1.Lines.Add(new_file_name);
-                    end;
-
-                end;
-
-            end;
-        end;
-    end
-  else
-    begin
-      // convert all
-
-      for i := 0 to ListBox1.Items.Count - 1 do
-        begin
-          s := ListBox1.Items[i];
-          if FileExists(s) then
+          new_file_name := copy(s, 1, pos(ext, s) - 1) + '.' + lowercase(RadioGroup2.Items[RadioGroup2.ItemIndex]);
+          if FileExists(new_file_name) then
+          begin
+            Memo1.Lines.Add('file already exist: ' + new_file_name);
+            if CheckBox_over_write.Checked then
             begin
-              ext := ExtractFileExt(s);
-              Load_IMG_File(s, Image1);
-              Image1.Refresh;
-{$IFDEF DEBUG}
-              sleep(500);
-{$ENDIF}
-              new_file_name := copy(s, 1, pos(ext, s) - 1) + '.' + lowercase(RadioGroup2.Items[RadioGroup2.ItemIndex]);
-
-              if FileExists(new_file_name) then
-                begin
-                  Memo1.Lines.Add('file already exist: ' + new_file_name);
-                  if CheckBox_over_write.Checked then
-                    begin
-                      Save_img_diff_format(new_file_name, Image1, iCompression);
-                      Memo1.Lines[Memo1.Lines.Count - 1] := Memo1.Lines[Memo1.Lines.Count - 1] + ' -->over write ';
-
-                    end;
-                end
-              else
-                begin
-                  Save_img_diff_format(new_file_name, Image1, iCompression);
-                  Memo1.Lines.Add(new_file_name);
-                end;
-
+              Save_img_diff_format(new_file_name, Image1, iCompression);
+              Memo1.Lines[Memo1.Lines.Count - 1] := Memo1.Lines[Memo1.Lines.Count - 1] + ' -->over write ';
             end;
+          end
+          else
+          begin
+            Save_img_diff_format(new_file_name, Image1, iCompression);
+            Memo1.Lines.Add(new_file_name);
+          end;
+
         end;
 
+      end;
     end;
+  end
+  else
+  begin
+    // convert all
+
+    for i := 0 to ListBox1.Items.Count - 1 do
+    begin
+      s := ListBox1.Items[i];
+      if FileExists(s) then
+      begin
+        ext := ExtractFileExt(s);
+        Load_IMG_File(s, Image1);
+        Image1.Refresh;
+{$IFDEF DEBUG}
+        sleep(500);
+{$ENDIF}
+        new_file_name := copy(s, 1, pos(ext, s) - 1) + '.' + lowercase(RadioGroup2.Items[RadioGroup2.ItemIndex]);
+
+        if FileExists(new_file_name) then
+        begin
+          Memo1.Lines.Add('file already exist: ' + new_file_name);
+          if CheckBox_over_write.Checked then
+          begin
+            Save_img_diff_format(new_file_name, Image1, iCompression);
+            Memo1.Lines[Memo1.Lines.Count - 1] := Memo1.Lines[Memo1.Lines.Count - 1] + ' -->over write ';
+
+          end;
+        end
+        else
+        begin
+          Save_img_diff_format(new_file_name, Image1, iCompression);
+          Memo1.Lines.Add(new_file_name);
+        end;
+
+      end;
+    end;
+
+  end;
 
   // convert selected file
 
@@ -222,20 +226,20 @@ end;
 
 procedure TForm_Main.Button_folder_selectClick(Sender: TObject);
 var
-  dir1: string;
-  SR: TSearchRec;
-  s1: string;
-  ext1: string;
+  dir1      : string;
+  SR        : TSearchRec;
+  s1        : string;
+  ext1      : string;
   recursive1: Boolean;
 begin
   ListBox1.Clear;
   with TFileOpenDialog.Create(nil) do
     try
-      Title := 'Select Directory';
-      Options := [fdoPickFolders, fdoPathMustExist, fdoForceFileSystem]; // YMMV
+      Title         := 'Select Directory';
+      Options       := [fdoPickFolders, fdoPathMustExist, fdoForceFileSystem]; // YMMV
       OkButtonLabel := 'Select';
       DefaultFolder := ExtractFilePath(Application.ExeName);
-      FileName := DefaultFolder;
+      FileName      := DefaultFolder;
       if Execute then
         dir1 := (FileName);
     finally
@@ -243,8 +247,8 @@ begin
     end;
 
   recursive1 := CheckBox_recursive.Checked;
-  ext1 := '*.' + RadioGroup1.Items[RadioGroup1.ItemIndex];
-  s1 := dir1 + '\' + ext1;
+  ext1       := '*.' + RadioGroup1.Items[RadioGroup1.ItemIndex];
+  s1         := dir1 + '\' + ext1;
   // s1:=dir1+'\' + '*';
   Edit1.Text := (s1);
 
@@ -278,12 +282,12 @@ begin
 
     appINI.WriteBool('File', 'recursive', CheckBox_recursive.Checked);
     with appINI, Form_Main do
-      begin
-        WriteInteger('Placement', 'Top', Top);
-        WriteInteger('Placement', 'Left', Left);
-        WriteInteger('Placement', 'Width', Width);
-        WriteInteger('Placement', 'Height', Height);
-      end;
+    begin
+      WriteInteger('Placement', 'Top', Top);
+      WriteInteger('Placement', 'Left', Left);
+      WriteInteger('Placement', 'Width', Width);
+      WriteInteger('Placement', 'Height', Height);
+    end;
   finally
     appINI.Free;
   end;
@@ -291,10 +295,10 @@ end;
 
 procedure TForm_Main.FormCreate(Sender: TObject);
 var
-  appINI: TIniFile;
+  appINI  : TIniFile;
   LastUser: string;
   LastDate: TDateTime;
-  s0, s1: string;
+  s0, s1  : string;
 begin
 
   // reload latest position / size
@@ -307,21 +311,21 @@ begin
     CheckBox_recursive.Checked := appINI.readBool('File', 'recursive', CheckBox_recursive.Checked);
 
     if pos('*.', Edit1.Text) > 0 then
-      begin
-        // try to search file by this condition
-        s0 := ExtractFilePath(Edit1.Text);
-        s1 := ExtractFileName(Edit1.Text);
+    begin
+      // try to search file by this condition
+      s0 := ExtractFilePath(Edit1.Text);
+      s1 := ExtractFileName(Edit1.Text);
 {$IFDEF DEBUG}
-        // MessageDlg('s0= ' + s0 + #13 + #10 + 's1= ' + s1, mtInformation, [mbOK], 0);
+      // MessageDlg('s0= ' + s0 + #13 + #10 + 's1= ' + s1, mtInformation, [mbOK], 0);
 {$ENDIF}
-        List_files_by_keyword(s0, s1, CheckBox_recursive.Checked, ListBox1);
-      end;
+      List_files_by_keyword(s0, s1, CheckBox_recursive.Checked, ListBox1);
+    end;
 
     LastDate := appINI.ReadDate('User', 'Date', Date); // show the message
     // ShowMessage('This program was previously used by ' + LastUser + ' on ' + DateToStr(LastDate));
-    Top := appINI.ReadInteger('Placement', 'Top', Top);
-    Left := appINI.ReadInteger('Placement', 'Left', Left);
-    Width := appINI.ReadInteger('Placement', 'Width', Width);
+    Top    := appINI.ReadInteger('Placement', 'Top', Top);
+    Left   := appINI.ReadInteger('Placement', 'Left', Left);
+    Width  := appINI.ReadInteger('Placement', 'Width', Width);
     Height := appINI.ReadInteger('Placement', 'Height', Height);
 
     {
@@ -338,14 +342,14 @@ begin
     }
     Left := max(0, Left);
     if Left + Width > Screen.DesktopWidth then
-      begin
-        Left := max(0, Screen.DesktopWidth - Width);
-      end;
+    begin
+      Left := max(0, Screen.DesktopWidth - Width);
+    end;
     if Top + Height > Screen.DesktopHeight then
-      begin
-        Top := max(0, Screen.DesktopHeight - Height);
-      end;
-    Width := min(Width, Screen.DesktopWidth - Left);
+    begin
+      Top := max(0, Screen.DesktopHeight - Height);
+    end;
+    Width  := min(Width, Screen.DesktopWidth - Left);
     Height := min(Height, Screen.DesktopHeight - Top);
 
   finally
@@ -355,7 +359,11 @@ begin
   OpenPictureDialog1.InitialDir := ExtractFilePath(Application.ExeName);
 
   originalPanelWindowProc := Form_Main.WindowProc;
-  Form_Main.WindowProc := PanelWindowProc;
+  Form_Main.WindowProc    := PanelWindowProc;
+
+  ChangeWindowMessageFilter(WM_DROPFILES, MSGFLT_ADD);
+  ChangeWindowMessageFilter(WM_COPYGLOBALDATA, MSGFLT_ADD);
+
   DragAcceptFiles(Form_Main.Handle, true);
 
 end;
@@ -365,10 +373,10 @@ var
   delta: TPoint;
 begin
   if dsDragEnter = State then
-    begin
-      // marking org point
-      org := point(X, Y);
-    end;
+  begin
+    // marking org point
+    org := point(X, Y);
+  end;
   delta.X := org.X - X;
   delta.Y := org.Y - Y;
   ((Sender as TImage).Parent as TScrollBox).HorzScrollBar.Position := ((Sender as TImage).Parent as TScrollBox).HorzScrollBar.Position + delta.X;
@@ -382,21 +390,21 @@ var
 begin
   // pos1:= point(x+ScrollBox1.left,y+ScrollBox1.top);
   if (ssMiddle in Shift) then
-    begin
-      //1:1
-      pos1 := point(X, Y);
-      Image_scrollBox_Zoom2(Image1, 0, pos1);
-      show_image_rate_on_label_rate;
-      show_image1_size_on_label_size;
+  begin
+    // 1:1
+    pos1 := point(X, Y);
+    Image_scrollBox_Zoom2(Image1, 0, pos1);
+    show_image_rate_on_label_rate;
+    show_image1_size_on_label_size;
 
-      pos1.X := pos1.X - ScrollBox1.HorzScrollBar.Position; // + scrollbox1.Left ;
-      pos1.Y := pos1.Y - ScrollBox1.VertScrollBar.Position; // + scrollbox1.top;
+    pos1.X := pos1.X - ScrollBox1.HorzScrollBar.Position; // + scrollbox1.Left ;
+    pos1.Y := pos1.Y - ScrollBox1.VertScrollBar.Position; // + scrollbox1.top;
 
-      pos1 := ClientToScreen(pos1);
+    pos1 := ClientToScreen(pos1);
 
-      SetCursorPos(pos1.X + ScrollBox1.Left, pos1.Y + ScrollBox1.Top);
+    SetCursorPos(pos1.X + ScrollBox1.Left, pos1.Y + ScrollBox1.Top);
 
-    end;
+  end;
 
 end;
 
@@ -405,6 +413,11 @@ begin
   // update rate to label_rate
   if Image1.Picture.Bitmap.Width > 0 then
     Label_rate.Caption := Format('%3.2f%%', [Image1.Width / Image1.Picture.Bitmap.Width * 100]);
+end;
+
+procedure TForm_Main.SpeedButton1Click(Sender: TObject);
+begin
+  ShowAboutBox;
 end;
 
 procedure TForm_Main.showinExplorer1Click(Sender: TObject);
@@ -423,12 +436,12 @@ var
 begin
   s := ListBox1.Items[ListBox1.ItemIndex];
   if lowercase(ExtractFileExt(s)) = '.gif' then
-    begin
-      Image1.Picture.LoadFromFile(s);
-      (Image1.Picture.Graphic as TGIFImage).Animate := true;
-      StatusBar1.Panels[3].Text := Format('w:%3d h:%3d', [Image1.Width, Image1.Height]);
-      StatusBar1.Panels[4].Text := Format('w:%3d h:%3d', [Image1.Picture.Width, Image1.Picture.Height]);
-    end;
+  begin
+    Image1.Picture.LoadFromFile(s);
+    (Image1.Picture.Graphic as TGIFImage).Animate := true;
+    StatusBar1.Panels[3].Text                     := Format('w:%3d h:%3d', [Image1.Width, Image1.Height]);
+    StatusBar1.Panels[4].Text                     := Format('w:%3d h:%3d', [Image1.Picture.Width, Image1.Picture.Height]);
+  end;
 
 end;
 
@@ -439,48 +452,48 @@ begin
   s := ListBox1.Items[ListBox1.ItemIndex];
 
   if FileExists(s) then
-    begin
-      Load_IMG_File(s, Image1);
-      show_image_rate_on_label_rate;
-      show_image1_size_on_label_size;
-      // image_to_bitmap_24bit(Image1);
+  begin
+    Load_IMG_File(s, Image1);
+    show_image_rate_on_label_rate;
+    show_image1_size_on_label_size;
+    // image_to_bitmap_24bit(Image1);
 
-    end;
+  end;
 
 end;
 
 procedure TForm_Main.ListBox1DblClick(Sender: TObject);
 var
   s, ext, new_file_name: string;
-  iCompression: Integer;
+  iCompression         : Integer;
 begin
   iCompression := StrToIntDef(Edit_Jpg_compress_rate.Text, 0);
-  s := ListBox1.Items[ListBox1.ItemIndex];
+  s            := ListBox1.Items[ListBox1.ItemIndex];
   if FileExists(s) then
+  begin
+    if MessageDlg('Convert [' + ExtractFileName(s) + '] file to ' + RadioGroup2.Items[RadioGroup2.ItemIndex] + ' format?', mtWarning, [mbYes, mbNo, mbCancel], 0) = mryes then
     begin
-      if MessageDlg('Convert [' + ExtractFileName(s) + '] file to ' + RadioGroup2.Items[RadioGroup2.ItemIndex] + ' format?', mtWarning, [mbYes, mbNo, mbCancel], 0) = mryes then
-        begin
-          // convert
-          Memo1.Lines.Add('convert one file ');
+      // convert
+      Memo1.Lines.Add('convert one file ');
 
-          ext := ExtractFileExt(s);
-          new_file_name := copy(s, 1, pos(ext, s) - 1) + '.' + lowercase(RadioGroup2.Items[RadioGroup2.ItemIndex]);
-          if FileExists(new_file_name) then
-            begin
-              Memo1.Lines.Add('file already exist: ' + new_file_name);
-              if CheckBox_over_write.Checked then
-                begin
-                  Save_img_diff_format(new_file_name, Image1, iCompression);
-                  Memo1.Lines[Memo1.Lines.Count - 1] := Memo1.Lines[Memo1.Lines.Count - 1] + ' -->over write ';
-                end;
-            end
-          else
-            begin
-              Save_img_diff_format(new_file_name, Image1, iCompression);
-              Memo1.Lines.Add(new_file_name);
-            end;
+      ext           := ExtractFileExt(s);
+      new_file_name := copy(s, 1, pos(ext, s) - 1) + '.' + lowercase(RadioGroup2.Items[RadioGroup2.ItemIndex]);
+      if FileExists(new_file_name) then
+      begin
+        Memo1.Lines.Add('file already exist: ' + new_file_name);
+        if CheckBox_over_write.Checked then
+        begin
+          Save_img_diff_format(new_file_name, Image1, iCompression);
+          Memo1.Lines[Memo1.Lines.Count - 1] := Memo1.Lines[Memo1.Lines.Count - 1] + ' -->over write ';
         end;
+      end
+      else
+      begin
+        Save_img_diff_format(new_file_name, Image1, iCompression);
+        Memo1.Lines.Add(new_file_name);
+      end;
     end;
+  end;
 
 end;
 
@@ -492,88 +505,88 @@ begin
   StatusBar1.Panels[0].Text := inttostr(Key);
 
   if ssShift in Shift then
-    begin
-      case Key of
-        46:
+  begin
+    case Key of
+      46:
+        begin
+          if (MessageDlg('Permanent delete?', mtConfirmation, [mbYes, mbCancel], 0) = mryes) then
           begin
-            if (MessageDlg('Permanent delete?', mtConfirmation, [mbYes, mbCancel], 0) = mryes) then
+
+            for i := 0 to ListBox1.Items.Count - 1 do
+            begin
+              if ListBox1.Selected[i] then
               begin
-
-                for i := 0 to ListBox1.Items.Count - 1 do
-                  begin
-                    if ListBox1.Selected[i] then
-                      begin
-                        s := ListBox1.Items[i];
-                        Memo1.Lines.Add('Permanent delete: ' + s);
-                        DeleteFile(s);
-                      end;
-
-                  end;
-
-                PopupMenu_deleteClick(self);
+                s := ListBox1.Items[i];
+                Memo1.Lines.Add('Permanent delete: ' + s);
+                DeleteFile(s);
               end;
 
+            end;
+
+            PopupMenu_deleteClick(self);
           end;
 
-      end;
-
-    end
-  else
-    begin
-      case Key of
-        46:
-          PopupMenu_deleteClick(self);
-
-      end;
+        end;
 
     end;
+
+  end
+  else
+  begin
+    case Key of
+      46:
+        PopupMenu_deleteClick(self);
+
+    end;
+
+  end;
 
 end;
 
 procedure TForm_Main.PanelDropFile(var Msg: TWMDROPFILES);
 var
-  numFiles: longint;
-  buffer: array [0 .. MAX_PATH] of Char;
+  numFiles : longint;
+  buffer   : array [0 .. MAX_PATH] of Char;
   file_ansi: AnsiString;
-  buffer2: array [0 .. MAX_PATH] of AnsiChar;
-  delta: TPoint;
-  file_cnt: Integer;
+  buffer2  : array [0 .. MAX_PATH] of AnsiChar;
+  delta    : TPoint;
+  file_cnt : Integer;
 begin
   numFiles := DragQueryFile(Msg.Drop, $FFFFFFFF, nil, 0);
   if numFiles <= 0 then
-    begin
-      exit;
-    end;
+  begin
+    exit;
+  end;
 
   for file_cnt := 0 to numFiles - 1 do
+  begin
+    DragQueryFile(Msg.Drop, file_cnt, @buffer, SizeOf(buffer));
+    file_ansi := (buffer);
+    ListBox1.Items.Add(file_ansi);
+
+    if file_cnt = (numFiles - 1) then
     begin
       DragQueryFile(Msg.Drop, file_cnt, @buffer, SizeOf(buffer));
-      file_ansi := (buffer);
-      ListBox1.Items.Add(file_ansi);
+      try
+        file_ansi := (buffer);
+        // load image file here
+        Image1.AutoSize := true;
+        Image1.Picture.LoadFromFile(file_ansi);
+        // image1_to_bitmap(self);
+        image_to_bitmap(Image1);
+        Image1.AutoSize := false;
+        // moving := false;
+        delta := point(0, 0);
+        // Image_scrollBox_Zoom(Image1, 0, delta.X,delta.Y);
+        // mapping_image_Transparent(Image1, Image2);
 
-      if file_cnt = (numFiles - 1) then
-        begin
-          DragQueryFile(Msg.Drop, file_cnt, @buffer, SizeOf(buffer));
-          try
-            file_ansi := (buffer);
-            // load image file here
-            Image1.AutoSize := true;
-            Image1.Picture.LoadFromFile(file_ansi);
-            // image1_to_bitmap(self);
-            image_to_bitmap(Image1);
-            Image1.AutoSize := false;
-            // moving := false;
-            delta := point(0, 0);
-            // Image_scrollBox_Zoom(Image1, 0, delta.X,delta.Y);
-            // mapping_image_Transparent(Image1, Image2);
+      except
+        on EInvalidGraphic do
+          ShowMessage('Unsupported image file!');
+      end;
 
-          except
-            on EInvalidGraphic do
-              ShowMessage('Unsupported image file!');
-          end;
-
-        end;
     end;
+  end;
 
 end;
 
@@ -587,10 +600,10 @@ end;
 
 procedure TForm_Main.Permanentdelete1Click(Sender: TObject);
 var
-  Key: Word;
+  Key   : Word;
   shift1: TShiftState;
 begin
-  Key := 46;
+  Key    := 46;
   shift1 := [ssShift];
   ListBox1KeyUp(self, Key, shift1);
 end;
@@ -605,8 +618,8 @@ var
   s0, s1: string;
 
 begin
-  s0 := ExtractFilePath(Edit1.Text);
-  s1 := '*.' + RadioGroup1.Items[RadioGroup1.ItemIndex];
+  s0         := ExtractFilePath(Edit1.Text);
+  s1         := '*.' + RadioGroup1.Items[RadioGroup1.ItemIndex];
   Edit1.Text := s0 + s1;
   Search_changed(self);
 end;
@@ -618,15 +631,15 @@ var
 begin
   ListBox1.Clear;
   if pos('*.', Edit1.Text) > 0 then
-    begin
-      // try to search file by this condition
-      s0 := ExtractFilePath(Edit1.Text);
-      s1 := ExtractFileName(Edit1.Text);
+  begin
+    // try to search file by this condition
+    s0 := ExtractFilePath(Edit1.Text);
+    s1 := ExtractFileName(Edit1.Text);
 {$IFDEF DEBUG}
-      // MessageDlg('s0= ' + s0 + #13 + #10 + 's1= ' + s1, mtInformation, [mbOK], 0);
+    // MessageDlg('s0= ' + s0 + #13 + #10 + 's1= ' + s1, mtInformation, [mbOK], 0);
 {$ENDIF}
-      List_files_by_keyword(s0, s1, CheckBox_recursive.Checked, ListBox1);
-    end;
+    List_files_by_keyword(s0, s1, CheckBox_recursive.Checked, ListBox1);
+  end;
 
 end;
 
@@ -641,28 +654,28 @@ begin
   pos1.Y := pos1.Y + ScrollBox1.VertScrollBar.Position - ScrollBox1.Top;
 
   if (ssLeft in Shift) and (ssright in Shift) then
-    begin
+  begin
 
-      Image_scrollBox_Zoom2(Image1, 0, pos1);
-      exit;
-    end
+    Image_scrollBox_Zoom2(Image1, 0, pos1);
+    exit;
+  end
   else
+  begin
+    if WheelDelta < 0 then
     begin
-      if WheelDelta < 0 then
-        begin
-          Image_scrollBox_Zoom2(Image1, 0.8, pos1);
-
-        end;
-      if WheelDelta > 0 then
-        begin
-          Image_scrollBox_Zoom2(Image1, 1.2, pos1);
-        end;
+      Image_scrollBox_Zoom2(Image1, 0.8, pos1);
 
     end;
+    if WheelDelta > 0 then
+    begin
+      Image_scrollBox_Zoom2(Image1, 1.2, pos1);
+    end;
+
+  end;
 
   pos1.X := pos1.X - ScrollBox1.HorzScrollBar.Position; // + scrollbox1.Left ;
   pos1.Y := pos1.Y - ScrollBox1.VertScrollBar.Position; // + scrollbox1.top;
-  pos1 := ClientToScreen(pos1);
+  pos1   := ClientToScreen(pos1);
 
   SetCursorPos(pos1.X + ScrollBox1.Left, +pos1.Y + ScrollBox1.Top);
   Handled := true;
@@ -685,15 +698,15 @@ var
   s: string;
 begin
   if recursive1 then
-    begin
-      for s in TDirectory.GetFiles(dir1, ext1, TSearchOption.soAllDirectories) do
-        ListBox1.Items.Add(s);
-    end
+  begin
+    for s in TDirectory.GetFiles(dir1, ext1, TSearchOption.soAllDirectories) do
+      ListBox1.Items.Add(s);
+  end
   else
-    begin
-      for s in TDirectory.GetFiles(dir1, ext1, TSearchOption.soTopDirectoryOnly) do
-        ListBox1.Items.Add(s);
-    end;
+  begin
+    for s in TDirectory.GetFiles(dir1, ext1, TSearchOption.soTopDirectoryOnly) do
+      ListBox1.Items.Add(s);
+  end;
 end;
 
 end.

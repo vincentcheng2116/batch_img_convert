@@ -3,10 +3,10 @@ program batch_img_convert;
 uses
   Vcl.Forms,
   Unit1 in 'Unit1.pas' {Form_Main},
-  About in '..\..\..\..\mycompDelphi10\TDE_COMMON\About.pas' {AboutBox},
-  Unit_Image_process in '..\..\..\..\mycompDelphi10\TDE_COMMON\Unit_Image_process.pas',
   Vcl.Themes,
-  Vcl.Styles;
+  Vcl.Styles,
+  Unit_Image_process in '..\..\..\..\mycompDelphi11\TDE_COMMON\Unit_Image_process.pas',
+  About in '..\..\..\..\mycompDelphi11\TDE_COMMON\About.pas' {AboutBox};
 
 {$R *.res}
 

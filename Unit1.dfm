@@ -2,184 +2,144 @@ object Form_Main: TForm_Main
   Left = 0
   Top = 0
   Caption = 'Batch Images Converter'
-  ClientHeight = 1250
-  ClientWidth = 1071
+  ClientHeight = 1000
+  ClientWidth = 857
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -15
+  Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
   KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
-  PixelsPerInch = 120
   DesignSize = (
-    1071
-    1250)
-  TextHeight = 20
+    857
+    1000)
+  TextHeight = 15
   object Splitter1: TSplitter
     Left = 0
-    Top = 131
-    Width = 1071
-    Height = 10
+    Top = 105
+    Width = 857
+    Height = 8
     Cursor = crVSplit
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Align = alTop
   end
   object Splitter2: TSplitter
     Left = 0
-    Top = 381
-    Width = 1071
-    Height = 10
+    Top = 305
+    Width = 857
+    Height = 8
     Cursor = crVSplit
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Align = alTop
-    ExplicitTop = 151
   end
   object Splitter3: TSplitter
     Left = 0
-    Top = 688
-    Width = 1071
-    Height = 10
+    Top = 550
+    Width = 857
+    Height = 8
     Cursor = crVSplit
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
     Align = alTop
-    ExplicitLeft = 9
-    ExplicitTop = 650
   end
   object Bevel2: TBevel
     Left = 0
     Top = 0
-    Width = 1071
-    Height = 131
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Width = 857
+    Height = 105
     Align = alTop
-    ExplicitTop = 10
+  end
+  object SpeedButton1: TSpeedButton
+    Left = 815
+    Top = 8
+    Width = 34
+    Height = 33
+    Anchors = [akTop, akRight]
+    Caption = '?'
+    OnClick = SpeedButton1Click
   end
   object Edit1: TEdit
-    Left = 120
-    Top = 9
-    Width = 935
-    Height = 28
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Left = 96
+    Top = 7
+    Width = 713
+    Height = 23
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
     Text = 'Edit1'
-    ExplicitWidth = 931
+    ExplicitWidth = 709
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 1232
-    Width = 1071
-    Height = 18
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Top = 986
+    Width = 857
+    Height = 14
     Panels = <
       item
-        Width = 200
+        Width = 160
       end
       item
-        Width = 200
+        Width = 160
       end
       item
-        Width = 200
+        Width = 160
       end
       item
-        Width = 200
+        Width = 160
       end
       item
-        Width = 200
+        Width = 160
       end>
-    ExplicitTop = 1227
-    ExplicitWidth = 1067
+    ExplicitTop = 974
+    ExplicitWidth = 853
   end
   object Memo1: TMemo
     Left = 0
-    Top = 391
-    Width = 1071
-    Height = 297
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Top = 313
+    Width = 857
+    Height = 237
     Align = alTop
     Lines.Strings = (
       'Memo1')
     TabOrder = 2
-    ExplicitWidth = 1067
+    ExplicitWidth = 853
   end
   object Button1: TButton
-    Left = 9
-    Top = 9
-    Width = 103
-    Height = 25
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Left = 7
+    Top = 7
+    Width = 83
+    Height = 20
     Caption = 'Files Select'
     TabOrder = 3
     OnClick = Button1Click
   end
   object ListBox1: TListBox
     Left = 0
-    Top = 141
-    Width = 1071
-    Height = 240
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Top = 113
+    Width = 857
+    Height = 192
     Align = alTop
-    ItemHeight = 20
+    ItemHeight = 15
     MultiSelect = True
     PopupMenu = PopupMenu1
     TabOrder = 4
     OnClick = ListBox1Click
     OnDblClick = ListBox1DblClick
     OnKeyUp = ListBox1KeyUp
-    ExplicitWidth = 1067
+    ExplicitWidth = 853
   end
   object Button_folder_select: TButton
-    Left = 9
-    Top = 54
-    Width = 103
-    Height = 25
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Left = 7
+    Top = 43
+    Width = 83
+    Height = 20
     Caption = 'Folder Select'
     TabOrder = 5
     OnClick = Button_folder_selectClick
   end
   object RadioGroup1: TRadioGroup
-    Left = 120
-    Top = 42
-    Width = 401
-    Height = 70
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Left = 96
+    Top = 34
+    Width = 321
+    Height = 56
     Caption = 'File_format'
     Columns = 5
     ItemIndex = 0
@@ -193,14 +153,10 @@ object Form_Main: TForm_Main
     OnClick = RadioGroup1Click
   end
   object CheckBox_recursive: TCheckBox
-    Left = 9
-    Top = 87
-    Width = 98
-    Height = 25
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Left = 7
+    Top = 70
+    Width = 79
+    Height = 20
     Caption = 'Recursive'
     Checked = True
     State = cbChecked
@@ -209,25 +165,19 @@ object Form_Main: TForm_Main
   end
   object ScrollBox1: TScrollBox
     Left = 0
-    Top = 777
-    Width = 1071
-    Height = 455
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Top = 622
+    Width = 857
+    Height = 364
     Align = alClient
     TabOrder = 8
     OnMouseWheel = ScrollBox1MouseWheel
+    ExplicitWidth = 853
+    ExplicitHeight = 352
     object Image1: TImage
-      Left = 4
-      Top = 4
-      Width = 197
-      Height = 197
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 3
+      Top = 3
+      Width = 158
+      Height = 158
       AutoSize = True
       DragMode = dmAutomatic
       OnDragOver = Image1DragOver
@@ -236,96 +186,64 @@ object Form_Main: TForm_Main
   end
   object Panel1: TPanel
     Left = 0
-    Top = 698
-    Width = 1071
-    Height = 79
-    Margins.Left = 4
-    Margins.Top = 4
-    Margins.Right = 4
-    Margins.Bottom = 4
+    Top = 558
+    Width = 857
+    Height = 64
     Align = alTop
     TabOrder = 9
-    ExplicitWidth = 1067
+    ExplicitWidth = 853
     object Label1: TLabel
-      Left = 596
-      Top = 8
-      Width = 120
-      Height = 20
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 477
+      Top = 6
+      Width = 96
+      Height = 15
       Caption = 'JPG compress rate'
     end
     object Label_rate: TLabel
-      Left = 740
-      Top = 51
-      Width = 68
-      Height = 20
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 592
+      Top = 41
+      Width = 53
+      Height = 15
       Caption = 'Label_rate'
     end
     object Label_size: TLabel
-      Left = 830
-      Top = 51
-      Width = 67
-      Height = 20
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 664
+      Top = 41
+      Width = 52
+      Height = 15
       Caption = 'Label_size'
       OnClick = Label_sizeClick
     end
     object Button_Convert: TButton
-      Left = 9
-      Top = 8
-      Width = 131
-      Height = 25
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 7
+      Top = 6
+      Width = 105
+      Height = 20
       Caption = 'Convert to: '
       TabOrder = 0
       OnClick = Button_ConvertClick
     end
     object Edit_Jpg_compress_rate: TEdit
-      Left = 724
-      Top = 8
-      Width = 52
-      Height = 28
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 579
+      Top = 6
+      Width = 42
+      Height = 23
       TabOrder = 1
       Text = '90'
     end
     object CheckBox_over_write: TCheckBox
-      Left = 784
-      Top = 8
-      Width = 98
-      Height = 18
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 627
+      Top = 6
+      Width = 79
+      Height = 15
       Caption = 'Over Write'
       TabOrder = 2
     end
     object RadioGroup2: TRadioGroup
-      Left = 148
-      Top = 8
-      Width = 420
-      Height = 46
-      Margins.Left = 4
-      Margins.Top = 4
-      Margins.Right = 4
-      Margins.Bottom = 4
+      Left = 118
+      Top = 6
+      Width = 336
+      Height = 37
       Caption = 'File_format_to'
       Columns = 5
       ItemIndex = 1
@@ -361,7 +279,7 @@ object Form_Main: TForm_Main
     Left = 616
     Top = 184
     object PopupMenu_delete: TMenuItem
-      Caption = 'Delete'
+      Caption = 'Delete (remove for list)'
       OnClick = PopupMenu_deleteClick
     end
     object showinExplorer1: TMenuItem
